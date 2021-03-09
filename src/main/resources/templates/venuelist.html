@@ -1,0 +1,58 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/style.css}"
+          href="../static/css/style.css"/>
+    <title>venues</title>
+</head>
+<body>
+<div th:replace="fragments/header :: header">Header</div>
+
+<div class="row1">
+    <div class="row1content">
+        <h2>venues</h2>
+        <div class="filters">
+            <div class="onefilter">
+                <div class="filtername">outdoor:</div>
+                <a  class="buttonLook filterButton" th:classappend="(${filterOutdoor}==null) ? 'activeFilter' : ''"
+                    th:href="@{/venuelist}">all</a>
+                <a  class="buttonLook filterButton" th:classappend="(${filterOutdoor}=='yes') ? 'activeFilter' : ''"
+                    th:href="@{/venuelist/outdoor/yes}">yes</a>
+                <a  class="buttonLook filterButton" th:classappend="(${filterOutdoor}=='no') ? 'activeFilter' : ''"
+                    th:href="@{/venuelist/outdoor/no}">no</a>
+            </div>
+            <div class="onefilter">
+                <div class="filtername">indoor:</div>
+                <a  class="buttonLook filterButton" th:classappend="(${filterIndoor}==null) ? 'activeFilter' : ''"
+                    th:href="@{/venuelist}">all</a>
+                <a  class="buttonLook filterButton" th:classappend="(${filterIndoor}=='yes') ? 'activeFilter' : ''"
+                    th:href="@{/venuelist/indoor/yes}">yes</a>
+                <a  class="buttonLook filterButton" th:classappend="(${filterIndoor}=='no') ? 'activeFilter' : ''"
+                    th:href="@{/venuelist/indoor/no}">no</a>
+            </div>
+            <div class="onefilter">
+                <div class="filtername">size:</div>
+                <a  class="buttonLook filterButton" th:classappend="(${filterSize}==null) ? 'activeFilter' : ''"
+                    th:href="@{/venuelist}">all</a>
+                <a  class="buttonLook filterButton" th:classappend="(${filterSize}=='S') ? 'activeFilter' : ''"
+                    th:href="@{/venuelist/size/S}">S</a>
+                <a  class="buttonLook filterButton" th:classappend="(${filterSize}=='M') ? 'activeFilter' : ''"
+                    th:href="@{/venuelist/size/M}">M</a>
+                <a  class="buttonLook filterButton" th:classappend="(${filterSize}=='L') ? 'activeFilter' : ''"
+                    th:href="@{/venuelist/size/L}">L</a>
+            </div>
+        </div>
+        <div class="venuelist">
+            <div th:each="venue:${venues}">
+                <a class="buttonLook mediumButton"
+                   th:href="@{|/venuedetails/${venue.id}|}"
+                   th:text="${venue.venueName}">venue name</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="fragments/footer :: footer">Footer</div>
+</body>
+</html>

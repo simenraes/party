@@ -1,7 +1,7 @@
-package be.thomamore.party.controllers;
+package be.thomasmore.party.controllers;
 
-import be.thomamore.party.model.Venue;
-import be.thomamore.party.repositories.VenueRepository;
+import be.thomasmore.party.model.Venue;
+import be.thomasmore.party.repositories.VenueRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
