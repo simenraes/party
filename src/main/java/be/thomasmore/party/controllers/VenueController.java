@@ -2,30 +2,28 @@ package be.thomasmore.party.controllers;
 
 import be.thomasmore.party.model.Venue;
 import be.thomasmore.party.repositories.VenueRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
 public class VenueController {
-    private final VenueRepository venueRepository;
+    private Logger logger = LoggerFactory.getLogger(VenueController.class);
 
-    public VenueController(VenueRepository venueRepository) {
-        this.venueRepository = venueRepository;
-    }
+    @Autowired
+    private VenueRepository venueRepository;
 
-    /*@GetMapping({"/venuedetailsbyid", "/venuedetailsbyid/{id}"})
-    public String venueDetailsById(Model model,
-                                   @PathVariable(required = false)Integer id){
-            model.addAttribute("venue", venueRepository.findById(id).get());
-            return "venuedetails";
-    }*/
     @GetMapping({"/venuedetails", "/venuedetails/{id}"})
-    public String venueDetailsById(Model model,
-                                   @PathVariable(required = false) Integer id) {
+    public String venueDetails(Model model,
+                               @PathVariable(required = false) Integer id) {
         if (id == null) return "venuedetails";
 
         Optional<Venue> optionalVenue = venueRepository.findById(id);
@@ -34,69 +32,49 @@ public class VenueController {
             model.addAttribute("venue", optionalVenue.get());
             model.addAttribute("prevId", id > 1 ? id - 1 : nrOfVenues);
             model.addAttribute("nextId", id < nrOfVenues ? id + 1 : 1);
-
         }
         return "venuedetails";
     }
-// WERKT MAAR GEEFT GEEN ERROR WANNEER INDEX OVERSCHREDEN WORDT ZIE BUNDEL 2 P 14
 
-
-
-
-
-
-
-
-    @GetMapping("/venuelist")
+    @GetMapping({"/venuelist"})
     public String venueList(Model model) {
+        logger.info("venueList");
         Iterable<Venue> venues = venueRepository.findAll();
+        long nrOfVenues = venueRepository.count();
         model.addAttribute("venues", venues);
-        return "venuelist";
-    }
-    //    @GetMapping("/venuelist")
-//    public String venueList(Model model) {
-//        model.addAttribute("venueNames", venueNames);
-//        return "venuelist";
-//    }
-    @GetMapping("/venuelist/outdoor/{filter}")
-    public String venueListOutdoor(Model model,
-                                   @PathVariable String filter) {
-        Iterable<Venue> venues = venueRepository.findByOutdoor(filter.equals("yes"));
-        model.addAttribute("venues", venues);
-        model.addAttribute("filterOutdoor", filter.equals("yes") ? "yes" : "no");
-        return "venuelist";
-    }
-    @GetMapping("/venuelist/indoor/{filter}")
-    public String venueListIndoor(Model model,
-                                  @PathVariable String filter) {
-        Iterable<Venue> venues = venueRepository.findByIndoor(filter.equals("yes"));
-        model.addAttribute("venues", venues);
-        model.addAttribute("filterIndoor", filter.equals("yes") ? "yes" : "no");
+        model.addAttribute("nrOfVenues", nrOfVenues);
+        model.addAttribute("showFilters", false);
         return "venuelist";
     }
 
-    @GetMapping("/venuelist/size/{filter}")
-    public String venueListSize(Model model,
-                                @PathVariable String filter) {
-        Iterable<Venue> venues;
-        switch (filter) {
-            case "S":
-                venues = venueRepository.findByCapacityBetween(0, 200);
-                break;
-            case "M":
-                venues = venueRepository.findByCapacityBetween(200, 600);
-                break;
-            case "L":
-                venues = venueRepository.findByCapacityGreaterThan(600);
-                break;
-            default:
-                venues = venueRepository.findAll();
-                filter = null;
-                break;
-        }
+    @GetMapping({"/venuelist/filter"})
+    public String venueListWithFilter(Model model,
+                                      @RequestParam(required = false) Integer minCapacity,
+                                      @RequestParam(required = false) Integer maxCapacity,
+                                      @RequestParam(required = false) Integer maxDistance,
+                                      @RequestParam(required = false) String filterFood,
+                                      @RequestParam(required = false) String filterIndoor,
+                                      @RequestParam(required = false) String filterOutdoor) {
+        logger.info(String.format("venueListWithFilter -- min=%d, max=%d, distance=%d, filterFood=%s, filterIndoor=%s, , filterOutdoor=%s",
+                minCapacity, maxCapacity, maxDistance, filterFood, filterIndoor, filterIndoor));
+
+        List<Venue> venues = venueRepository.findByFilter(minCapacity, maxCapacity, maxDistance,
+                filterStringToBoolean(filterFood), filterStringToBoolean(filterIndoor), filterStringToBoolean(filterOutdoor));
+
         model.addAttribute("venues", venues);
-        model.addAttribute("filterSize", filter);
+        model.addAttribute("nrOfVenues", venues.size());
+        model.addAttribute("showFilters", true);
+        model.addAttribute("minCapacity", minCapacity);
+        model.addAttribute("maxCapacity", maxCapacity);
+        model.addAttribute("maxDistance", maxDistance);
+        model.addAttribute("filterFood", filterFood);
+        model.addAttribute("filterIndoor", filterIndoor);
+        model.addAttribute("filterOutdoor", filterOutdoor);
+
         return "venuelist";
+    }
+    private Boolean filterStringToBoolean(String filterString) {
+        return (filterString == null || filterString.equals("all")) ? null : filterString.equals("yes");
     }
 
 }

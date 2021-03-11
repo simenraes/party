@@ -22,8 +22,6 @@ public class HomeController {
     private final Calendar c1 = Calendar.getInstance();
 
 
-
-
     @GetMapping({"/", "/home"})
     public String home(Model model) {
 
@@ -35,19 +33,6 @@ public class HomeController {
 
         return "about";
     }
-
-    @GetMapping("/pay")
-
-    public String pay(Model model,
-                      @PathVariable(required = false) boolean weekend) {
-
-        model.addAttribute("LocalDate", datum);
-
-
-        return "pay";
-    }
-
-
 
 
 
