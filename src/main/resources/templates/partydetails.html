@@ -1,0 +1,47 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/style.css}" href="../static/css/style.css"/>
+    <title>Let's Party!</title>
+</head>
+<body>
+
+<div th:replace="fragments/header :: header">Header</div>
+<div class="row1">
+    <div class="row1content" th:if="${party}">
+
+        <div class="prevButtonDiv">
+            <a class="buttonLook smallButton" th:href="@{|/partydetails/${prevId}|}">&lt;</a>
+        </div>
+        <div class="nextButtonDiv">
+            <a class="buttonLook smallButton" th:href="@{|/partydetails/${nextId}|}">&gt;</a>
+        </div>
+    </div>
+</div>
+<h2 th:text="${party.name}">venuedetails</h2>
+<a th:text="${party.date}">date</a>
+
+<div class="infoLine">
+    <div class ="infoLine" th:unless="${party.priceInEur} == null and ${party.getPricePresaleInEur()} == null">
+    <div class="infoLineName">price:</div>
+    <div class="infoLineValue" th:text="|${party.getPricePresaleInEur()} euro(presale)/${party.getPriceInEur()} euro|">
+        price
+    </div>
+</div>
+</div>
+<div class="infoLine">
+    <div class="infoLineName">doors:</div>
+    <div class="infoLineValue" th:text="|${party.doors} |">doors</div>
+</div>
+
+<div class="infoLine">
+    <div class="infoLine" th:unless="${party.extraInfo} == ' '">
+        <div class="infoLineName">extra info:</div>
+        <div class="infoLineValue" th:text="|${party.extraInfo}|">extra info</div>
+    </div>
+</div>
+
+
+</body>
+</html>
