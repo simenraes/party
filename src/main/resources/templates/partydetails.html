@@ -20,15 +20,19 @@
     </div>
 </div>
 <h2 th:text="${party.name}">venuedetails</h2>
-<a th:text="${party.date}">date</a>
+<a th:text="${party.date}">date</a><a> in de </a> <a th:href="${party.getVenue().getLinkMoreInfo()}">bv</a>
+
 
 <div class="infoLine">
-    <div class ="infoLine" th:unless="${party.priceInEur} == null and ${party.getPricePresaleInEur()} == null">
-    <div class="infoLineName">price:</div>
-    <div class="infoLineValue" th:text="|${party.getPricePresaleInEur()} euro(presale)/${party.getPriceInEur()} euro|">
-        price
+    <h2 th:if="${party.getPricePresaleInEur()} == null and ${party.getPriceInEur()} == null">FREE PARTY</h2>
+    <div class="infoLine" th:unless="${party.priceInEur} == null and ${party.getPricePresaleInEur()} == null">
+        <div class="infoLineName">price:</div>
+        <div class="infoLineValue"
+             th:text="|${party.getPricePresaleInEur()} euro(presale)/${party.getPriceInEur()} euro|">
+            price
+        </div>
+
     </div>
-</div>
 </div>
 <div class="infoLine">
     <div class="infoLineName">doors:</div>
